@@ -82,7 +82,7 @@ namespace KitchenInvasion {
             string lines = "";
             for (int i = 0; i < history.sessions.Count; i++) {
                 SessionRecord s = history.sessions[i];
-                lines += (i + 1) + ".  " + s.score + " pts  |  " + s.enemiesDefeated + " defeated  |  "
+                lines += (i + 1) + ".  " + (s.won ? "Won" : "Lost") + "  |  " + s.score + " pts  |  " + s.enemiesDefeated + " defeated  |  "
                     + s.timeSurvived.ToString("0") + "s\n<size=70%>" + s.date + "</size>\n\n";
             }
             leaderboardText.text = lines == "" ? "No games played yet." : lines;

@@ -8,7 +8,7 @@ namespace KitchenInvasion {
         [SerializeField] float minSpawnRadius = 0.25f;
         [SerializeField] float maxSpawnRadius = 0.5f;
         [SerializeField] float pepperChance = 0.35f;
-        [SerializeField] int maxEnemies = 10;
+        [SerializeField] int maxEnemies = 8;
 
         readonly List<Enemy> activeEnemies = new List<Enemy>();
         float spawnInterval = 2f;

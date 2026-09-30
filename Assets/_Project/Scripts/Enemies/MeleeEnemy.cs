@@ -4,7 +4,7 @@ namespace KitchenInvasion {
     public class MeleeEnemy : Enemy {
         [SerializeField] float attackRange = 0.5f;
         [SerializeField] float attackCooldown = 1.5f;
-        [SerializeField] int attackDamage = 10;
+        [SerializeField] int attackDamage = 5;
 
         float attackTimer;
 

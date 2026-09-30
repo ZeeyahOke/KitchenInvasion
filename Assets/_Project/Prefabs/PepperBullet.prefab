@@ -153,6 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b314d33538942bdbeb48855d5e0310, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KitchenInvasion.Bullet
-  damage: 10
+  damage: 5
   lifetime: 4
   firedByPlayer: 0

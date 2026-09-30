@@ -15,4 +15,4 @@ MonoBehaviour:
   difficultyName: Easy
   spawnInterval: 2.5
   enemySpeedMultiplier: 1
-  playerMaxHealth: 100
+  playerMaxHealth: 150

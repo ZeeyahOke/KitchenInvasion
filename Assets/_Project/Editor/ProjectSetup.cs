@@ -184,16 +184,17 @@ namespace KitchenInvasion.EditorTools
             Material pepperBulletMat = UnlitMaterial("M_PepperBullet", Hex("7CFC5A"));
             Material planeMat = PlaneMaterial();
 
-            DifficultySettings easy = Difficulty("Easy", 2.5f, 1f, 100);
-            DifficultySettings hard = Difficulty("Hard", 1.4f, 1.4f, 60);
+            DifficultySettings easy = Difficulty("Easy", 2.5f, 1f, 150);
+            DifficultySettings hard = Difficulty("Hard", 1.5f, 1.3f, 100);
 
             GameObject planePrefab = CreatePlanePrefab(planeMat);
             GameObject potPrefab = CreateModelPrefab("CookingPot", "pot.obj", potMat);
             Bullet playerBullet = CreateBulletPrefab("PlayerBullet", playerBulletMat, 0.03f, 1, 2f, true);
-            Bullet pepperBullet = CreateBulletPrefab("PepperBullet", pepperBulletMat, 0.045f, 10, 4f, false);
+            Bullet pepperBullet = CreateBulletPrefab("PepperBullet", pepperBulletMat, 0.045f, 5, 4f, false);
             MeleeEnemy tomato = CreateTomatoPrefab(tomatoMat, eyeMat);
             ShooterEnemy pepper = CreatePepperPrefab(pepperMat, eyeMat);
 
+            AssetDatabase.SaveAssets();
             BuildScene(planePrefab, potPrefab, playerBullet, pepperBullet, tomato, pepper, easy, hard);
             AssetDatabase.SaveAssets();
             Debug.Log("KI_SETUP content built");
@@ -284,7 +285,7 @@ namespace KitchenInvasion.EditorTools
         {
             Material m = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
             m.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(Root + "Textures/kitchen_tile_name.png"));
-            m.SetTextureScale("_BaseMap", new Vector2(2f, 2f));
+            m.SetTextureScale("_BaseMap", new Vector2(1.5f, 1.5f));
             m.SetColor("_BaseColor", new Color(1f, 1f, 1f, 0.9f));
             m.SetFloat("_Surface", 1f);
             m.SetFloat("_Blend", 0f);
@@ -324,12 +325,21 @@ namespace KitchenInvasion.EditorTools
             return prefab.GetComponent<T>();
         }
 
+        static T LoadPrefab<T>(string name) where T : Component
+        {
+            return AssetDatabase.LoadAssetAtPath<GameObject>(Root + "Prefabs/" + name + ".prefab").GetComponent<T>();
+        }
+
         static void Set(Object target, string field, object value)
         {
             SerializedObject so = new SerializedObject(target);
             SerializedProperty p = so.FindProperty(field);
             if (p == null) { Debug.LogError("KI_SETUP missing field " + field + " on " + target.name); return; }
-            if (value is Object o) p.objectReferenceValue = o;
+            if (value is Object o)
+            {
+                p.objectReferenceValue = o;
+                if (o == null) Debug.LogError("KI_SETUP null reference for " + field);
+            }
             else if (value is int i) p.intValue = i;
             else if (value is float f) p.floatValue = f;
             else if (value is bool b) p.boolValue = b;
@@ -431,7 +441,7 @@ namespace KitchenInvasion.EditorTools
             AddEnemyPhysics(go, col);
             MeleeEnemy e = go.AddComponent<MeleeEnemy>();
             Set(e, "maxHealth", 3);
-            Set(e, "moveSpeed", 0.35f);
+            Set(e, "moveSpeed", 0.3f);
             Set(e, "scoreValue", 10);
             return SavePrefab<MeleeEnemy>(go);
         }
@@ -461,6 +471,14 @@ namespace KitchenInvasion.EditorTools
             MeleeEnemy tomato, ShooterEnemy pepper, DifficultySettings easy, DifficultySettings hard)
         {
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            playerBullet = LoadPrefab<Bullet>("PlayerBullet");
+            pepperBullet = LoadPrefab<Bullet>("PepperBullet");
+            tomato = LoadPrefab<MeleeEnemy>("Tomato");
+            pepper = LoadPrefab<ShooterEnemy>("Pepper");
+            planePrefab = LoadPrefab<Transform>("KitchenPlane").gameObject;
+            potPrefab = LoadPrefab<Transform>("CookingPot").gameObject;
+            easy = AssetDatabase.LoadAssetAtPath<DifficultySettings>(Root + "ScriptableObjects/Easy.asset");
+            hard = AssetDatabase.LoadAssetAtPath<DifficultySettings>(Root + "ScriptableObjects/Hard.asset");
 
             GameObject light = new GameObject("Directional Light");
             Light l = light.AddComponent<Light>();
@@ -617,7 +635,7 @@ namespace KitchenInvasion.EditorTools
         static Toggle MakeToggle(string name, Transform parent, string label, Vector2 pos, ToggleGroup group, bool on)
         {
             Vector2 c = new Vector2(0.5f, 0.5f);
-            Image bg = MakeImage(name, parent, Color.white, c, c, pos, new Vector2(300f, 120f));
+            Image bg = MakeImage(name, parent, Color.white, c, c, pos, new Vector2(290f, 110f));
             bg.raycastTarget = true;
             Image check = MakeImage("Selected", bg.transform, Basil, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             TextMeshProUGUI text = MakeText("Label", bg.transform, label, 52f, Brown, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
@@ -657,14 +675,14 @@ namespace KitchenInvasion.EditorTools
 
             GameObject hud = new GameObject("HUD Panel", typeof(RectTransform));
             Rect(hud, root, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            Image bar = MakeImage("Top Bar", hud.transform, new Color(Brown.r, Brown.g, Brown.b, 0.82f), top, top, new Vector2(0f, -190f), new Vector2(1000f, 170f));
+            Image bar = MakeImage("Top Bar", hud.transform, new Color(Brown.r, Brown.g, Brown.b, 0.82f), top, top, new Vector2(0f, -150f), new Vector2(940f, 160f));
             Image healthBack = MakeImage("Health Back", bar.transform, new Color(0f, 0f, 0f, 0.45f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(250f, 0f), new Vector2(420f, 64f));
             Image healthFill = MakeImage("Health Fill", healthBack.transform, Basil, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             healthFill.rectTransform.pivot = new Vector2(0f, 0.5f);
             TextMeshProUGUI healthText = MakeText("Health Text", healthBack.transform, "100 HP", 40f, Color.white, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             TextMeshProUGUI scoreText = MakeText("Score Text", bar.transform, "Score 0", 56f, Mustard, c, c, new Vector2(120f, 0f), new Vector2(300f, 100f));
             TextMeshProUGUI timeText = MakeText("Time Text", bar.transform, "90s", 70f, Color.white, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-110f, 0f), new Vector2(200f, 100f));
-            TextMeshProUGUI fpsText = MakeText("FPS Text", hud.transform, "60 FPS", 30f, new Color(1f, 1f, 1f, 0.8f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(120f, -310f), new Vector2(200f, 50f));
+            TextMeshProUGUI fpsText = MakeText("FPS Text", hud.transform, "60 FPS", 30f, new Color(1f, 1f, 1f, 0.8f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(120f, -260f), new Vector2(200f, 50f));
             hud.AddComponent<FpsCounter>();
             Set(hud.GetComponent<FpsCounter>(), "fpsText", fpsText);
             MakeImage("Crosshair", hud.transform, new Color(1f, 1f, 1f, 0.9f), c, c, Vector2.zero, new Vector2(26f, 26f));
@@ -672,31 +690,31 @@ namespace KitchenInvasion.EditorTools
             MakeText("Hint Text", hint.transform, "Point at the floor, then tap to place the pot", 48f, Brown, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(-60f, 0f));
 
             GameObject start = FullPanel("Start Panel", root, new Color(Cream.r, Cream.g, Cream.b, 0.95f));
-            MakeText("Title", start.transform, "Kitchen\nInvasion", 170f, Tomato, top, top, new Vector2(0f, -420f), new Vector2(1000f, 460f));
-            MakeText("Subtitle", start.transform, "Survive 90 seconds of angry food!", 50f, Brown, top, top, new Vector2(0f, -700f), new Vector2(1000f, 90f));
-            MakeText("Difficulty Label", start.transform, "Difficulty", 46f, Brown, c, c, new Vector2(0f, 140f), new Vector2(600f, 70f));
+            MakeText("Title", start.transform, "Kitchen\nInvasion", 150f, Tomato, c, c, new Vector2(0f, 400f), new Vector2(1000f, 340f)).lineSpacing = -20f;
+            MakeText("Subtitle", start.transform, "Survive 90 seconds of angry food!", 44f, Brown, c, c, new Vector2(0f, 200f), new Vector2(1000f, 70f));
+            MakeText("Difficulty Label", start.transform, "Difficulty", 40f, Brown, c, c, new Vector2(0f, 115f), new Vector2(600f, 60f));
             ToggleGroup group = start.AddComponent<ToggleGroup>();
-            MakeToggle("Easy Toggle", start.transform, "Easy", new Vector2(-165f, 30f), group, true);
-            Toggle hardToggle = MakeToggle("Hard Toggle", start.transform, "Hard", new Vector2(165f, 30f), group, false);
+            MakeToggle("Easy Toggle", start.transform, "Easy", new Vector2(-160f, 25f), group, true);
+            Toggle hardToggle = MakeToggle("Hard Toggle", start.transform, "Hard", new Vector2(160f, 25f), group, false);
             UnityEventTools.AddPersistentListener(hardToggle.onValueChanged, ui.PressHardMode);
-            MakeButton("Start Button", start.transform, "START", Tomato, Color.white, new Vector2(0f, -200f), new Vector2(640f, 170f), ui.PressStart);
-            MakeButton("Leaderboard Button", start.transform, "LEADERBOARD", Mustard, Brown, new Vector2(0f, -410f), new Vector2(640f, 140f), ui.PressLeaderboard);
-            MakeText("Credit", start.transform, "made by Fawziyyah Oke", 38f, Brown, bottom, bottom, new Vector2(0f, 120f), new Vector2(800f, 60f));
+            MakeButton("Start Button", start.transform, "START", Tomato, Color.white, new Vector2(0f, -150f), new Vector2(620f, 150f), ui.PressStart);
+            MakeButton("Leaderboard Button", start.transform, "LEADERBOARD", Mustard, Brown, new Vector2(0f, -320f), new Vector2(620f, 120f), ui.PressLeaderboard);
+            MakeText("Credit", start.transform, "made by Fawziyyah Oke", 34f, Brown, c, c, new Vector2(0f, -460f), new Vector2(800f, 50f));
 
             GameObject end = FullPanel("End Panel", root, new Color(Cream.r, Cream.g, Cream.b, 0.95f));
-            TextMeshProUGUI resultTitle = MakeText("Result Title", end.transform, "You Survived!", 120f, Tomato, top, top, new Vector2(0f, -420f), new Vector2(1000f, 200f));
-            Image card = MakeImage("Stats Card", end.transform, Color.white, c, c, new Vector2(0f, 180f), new Vector2(860f, 420f));
-            TextMeshProUGUI resultStats = MakeText("Result Stats", card.transform, "Score: 0", 58f, Brown, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(-60f, -60f));
+            TextMeshProUGUI resultTitle = MakeText("Result Title", end.transform, "You Survived!", 110f, Tomato, c, c, new Vector2(0f, 420f), new Vector2(1000f, 160f));
+            Image card = MakeImage("Stats Card", end.transform, Color.white, c, c, new Vector2(0f, 150f), new Vector2(860f, 340f));
+            TextMeshProUGUI resultStats = MakeText("Result Stats", card.transform, "Score: 0", 54f, Brown, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(-60f, -60f));
             resultStats.lineSpacing = 20f;
-            MakeButton("Restart Button", end.transform, "RESTART", Tomato, Color.white, new Vector2(0f, -250f), new Vector2(640f, 160f), ui.PressStart);
-            MakeButton("Menu Button", end.transform, "MAIN MENU", Mustard, Brown, new Vector2(0f, -450f), new Vector2(640f, 140f), ui.PressMainMenu);
+            MakeButton("Restart Button", end.transform, "RESTART", Tomato, Color.white, new Vector2(0f, -150f), new Vector2(620f, 150f), ui.PressStart);
+            MakeButton("Menu Button", end.transform, "MAIN MENU", Mustard, Brown, new Vector2(0f, -320f), new Vector2(620f, 120f), ui.PressMainMenu);
 
             GameObject board = FullPanel("Leaderboard Panel", root, new Color(Cream.r, Cream.g, Cream.b, 0.97f));
-            MakeText("Board Title", board.transform, "Last 5 Games", 110f, Tomato, top, top, new Vector2(0f, -300f), new Vector2(1000f, 180f));
-            Image boardCard = MakeImage("Board Card", board.transform, Color.white, c, c, new Vector2(0f, 60f), new Vector2(940f, 1000f));
-            TextMeshProUGUI boardText = MakeText("Board Text", boardCard.transform, "No games played yet.", 46f, Brown, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(-70f, -70f));
+            MakeText("Board Title", board.transform, "Last 5 Games", 90f, Tomato, c, c, new Vector2(0f, 480f), new Vector2(1000f, 130f));
+            Image boardCard = MakeImage("Board Card", board.transform, Color.white, c, c, new Vector2(0f, 30f), new Vector2(900f, 740f));
+            TextMeshProUGUI boardText = MakeText("Board Text", boardCard.transform, "No games played yet.", 36f, Brown, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(-70f, -70f));
             boardText.alignment = TextAlignmentOptions.TopLeft;
-            MakeButton("Back Button", board.transform, "BACK", Tomato, Color.white, new Vector2(0f, -760f), new Vector2(640f, 150f), ui.PressMainMenu);
+            MakeButton("Back Button", board.transform, "BACK", Tomato, Color.white, new Vector2(0f, -470f), new Vector2(620f, 120f), ui.PressMainMenu);
 
             Image overlay = MakeImage("Damage Overlay", root, new Color(Tomato.r, Tomato.g, 0.1f, 0f), Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, false);
             DamageOverlay damage = overlay.gameObject.AddComponent<DamageOverlay>();
@@ -748,6 +766,70 @@ namespace KitchenInvasion.EditorTools
             }
             AssetDatabase.SaveAssets();
             Debug.Log("KI_SETUP validation done, remaining issues: " + remaining);
+        }
+
+        [MenuItem("Kitchen Invasion/Debug/Start Round And Place Pot")]
+        public static void DebugStartRound()
+        {
+            GameManager.Instance.StartGame();
+            PotPlacer placer = Object.FindAnyObjectByType<PotPlacer>();
+            Transform cam = Camera.main.transform;
+            Vector3 flat = cam.forward;
+            flat.y = 0f;
+            Vector3 spot = cam.position + flat.normalized * 1.2f + Vector3.down * 1.0f;
+            typeof(PotPlacer).GetMethod("PlacePot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(placer, new object[] { spot });
+            Debug.Log("KI_DEBUG pot placed at " + spot + " camera " + cam.position);
+        }
+
+        [MenuItem("Kitchen Invasion/Debug/Shoot At Nearest Enemy")]
+        public static void DebugShoot()
+        {
+            Enemy[] enemies = Object.FindObjectsByType<Enemy>();
+            Transform cam = Camera.main.transform;
+            if (enemies.Length > 0) cam.LookAt(enemies[0].transform.position + Vector3.up * 0.12f);
+            for (int i = 0; i < 3; i++)
+                typeof(PlayerShooter).GetMethod("Shoot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Object.FindAnyObjectByType<PlayerShooter>(), null);
+            Debug.Log("KI_DEBUG shot, enemies alive " + enemies.Length);
+        }
+
+        [MenuItem("Kitchen Invasion/Debug/Press Start")]
+        public static void DebugPressStart() { Object.FindAnyObjectByType<UIManager>().PressStart(); }
+
+        [MenuItem("Kitchen Invasion/Debug/Press Leaderboard")]
+        public static void DebugPressLeaderboard() { Object.FindAnyObjectByType<UIManager>().PressLeaderboard(); }
+
+        [MenuItem("Kitchen Invasion/Debug/Press Main Menu")]
+        public static void DebugPressMenu() { Object.FindAnyObjectByType<UIManager>().PressMainMenu(); }
+
+        [MenuItem("Kitchen Invasion/Debug/Select Hard")]
+        public static void DebugHard() { GameObject.Find("Hard Toggle").GetComponent<Toggle>().isOn = true; }
+
+        [MenuItem("Kitchen Invasion/Debug/Show Plane Sample")]
+        public static void DebugPlaneSample()
+        {
+            Transform cam = Camera.main.transform;
+            GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.transform.position = new Vector3(cam.position.x, cam.position.y - 1.2f, cam.position.z) + new Vector3(cam.forward.x, 0f, cam.forward.z).normalized * 1.0f;
+            quad.transform.rotation = Quaternion.Euler(90f, cam.eulerAngles.y, 0f);
+            quad.GetComponent<MeshRenderer>().sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>(Root + "Materials/M_KitchenPlane.mat");
+        }
+
+        [MenuItem("Kitchen Invasion/Debug/Log State")]
+        public static void DebugLogState()
+        {
+            GameManager g = GameManager.Instance;
+            string names = "";
+            FieldInfo hp = typeof(Enemy).GetField("health", BindingFlags.NonPublic | BindingFlags.Instance);
+            foreach (Enemy e in Object.FindObjectsByType<Enemy>()) names += e.name + "@" + e.transform.position + " hp " + hp.GetValue(e) + ", ";
+            foreach (Bullet b in Object.FindObjectsByType<Bullet>()) names += " bullet@" + b.transform.position;
+            Debug.Log("KI_DEBUG difficulty " + g.Difficulty.difficultyName + " planes " + Object.FindObjectsByType<ARPlane>().Length + " playing " + g.IsPlaying + " score " + g.Score + " killed " + g.EnemiesDefeated + " time " + g.TimeLeft + " enemies " + names);
+        }
+
+        [MenuItem("Kitchen Invasion/Debug/Capture Game View")]
+        public static void DebugCapture()
+        {
+            ScreenCapture.CaptureScreenshot("Logs/ki_shot.png");
+            Debug.Log("KI_DEBUG captured");
         }
 
         [MenuItem("Kitchen Invasion/5 Build iOS")]
