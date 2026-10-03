@@ -7,8 +7,8 @@ Made by Fawziyyah Oke.
 ## How to play
 
 1. Pick Easy or Hard on the start screen and press Start.
-2. Point the phone at the floor and move it slowly. The floor gets covered with my kitchen tile pattern (with my name on it) when a plane is found.
-3. Tap the tiles once to place the pot. After that the tiles disappear and the round timer starts.
+2. Point the phone at the floor and move it slowly. The floor gets covered with my kitchen tile pattern (with my name on it) when a plane is found. The tiles only show while you are looking down at them, so if you point the camera away from the floor they disappear.
+3. Tap the tiles once to place the pot. After that the tiles disappear and the round timer starts. Every new round (Restart or Main Menu then Start) resets the AR session, so you scan the floor and place the pot again.
 4. Tomatoes run at you and hit you for 5 damage when they get close (about half a metre), once every 1.5 seconds. Peppers stop about 2 metres away and shoot green seeds at you every 2 seconds (5 damage each).
 5. Tap anywhere to shoot a bullet straight out of the camera. Aim with the crosshair in the middle of the screen.
 6. A tomato takes 3 hits (10 points), a pepper takes 2 hits (20 points).
@@ -19,6 +19,10 @@ Made by Fawziyyah Oke.
 | Spawn interval | 2.5 s | 1.5 s |
 | Enemy speed | x1.0 | x1.3 |
 | Player health | 150 | 100 |
+
+## Logo and app icon
+
+The game has its own logo (an angry tomato climbing out of a pot with "KITCHEN INVASION" around it). I made it with `tools/make_logo.py`. It is set as the default app icon in Player Settings, shown on the splash screen above the "Made with Unity" logo, and used on the start screen, so it ships with every build.
 
 ## Opening the project
 
@@ -56,8 +60,8 @@ Assets/
       Interfaces/       IDamageable, IGameState
       Player/           PlayerHealth, PlayerShooter, Bullet, ObjectPool, PointerInput
       States/           StartState, PlayState, EndState
-      UI/               UIManager, DamageOverlay, FpsCounter
-    Textures/           kitchen tile texture with my name, colormaps, UI sprite
+      UI/               UIManager, DamageOverlay
+    Textures/           kitchen tile texture with my name, game logo and app icon, colormaps, UI sprite
   Settings/             URP pipeline assets (from the Universal 3D template)
   TextMesh Pro/         TMP essential resources
   XR/                   XR Plug-in Management and ARKit settings
