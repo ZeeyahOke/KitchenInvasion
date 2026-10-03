@@ -465,7 +465,8 @@ MonoBehaviour:
   maxHealth: 2
   moveSpeed: 0.25
   scoreValue: 20
-  hitFlashTime: 0.12
+  hitFlashTime: 0.18
+  flashMaterial: {fileID: 2100000, guid: f6992a680be6d469aaca2dd546fa20ed, type: 2}
   stopDistance: 2
   fireInterval: 2
   bulletSpeed: 2

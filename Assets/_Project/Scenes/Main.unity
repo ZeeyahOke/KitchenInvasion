@@ -4974,10 +4974,12 @@ MonoBehaviour:
   playerShoot: {fileID: 8300000, guid: d54a1a2a128854a03b50f567940a9768, type: 3}
   playerDeath: {fileID: 8300000, guid: e8139c3ff0d6242ad84a6cf5ca92f1cb, type: 3}
   enemySpawn: {fileID: 8300000, guid: ff51d272f446f416c9c137581349d5d8, type: 3}
+  enemyHit: {fileID: 8300000, guid: 3261a30c4845449b6b6a6c3c79c97dcf, type: 3}
   enemyKilled: {fileID: 8300000, guid: 40e50025975764c02a5e9f4a09eff11b, type: 3}
   pepperShoot: {fileID: 8300000, guid: e43be40c3ab224cbc843f90b4971295a, type: 3}
   tomatoHit: {fileID: 8300000, guid: caf326b11fc8a44069c9f38ecfdb6c5a, type: 3}
   buttonClick: {fileID: 8300000, guid: 26412f72f397e4c8dbb04d158d827504, type: 3}
+  winJingle: {fileID: 8300000, guid: 19505b547efbd47b98377381643d9f9e, type: 3}
   backgroundMusic: {fileID: 8300000, guid: 1c8bd399ff3d444d1b08bbded902ec9b, type: 3}
 --- !u!82 &1905278224
 AudioSource:
@@ -5852,7 +5854,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Point at the floor, then tap to place the pot
+  m_text: Move your phone slowly over the floor, then tap the tiles to place the pot
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0f5217edc38ec4561a7274d0e09e6156, type: 2}
   m_sharedMaterial: {fileID: 2045359529381235520, guid: 0f5217edc38ec4561a7274d0e09e6156, type: 2}
@@ -5879,8 +5881,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
-  m_fontSizeBase: 48
+  m_fontSize: 42
+  m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

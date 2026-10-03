@@ -22,7 +22,7 @@ Made by Fawziyyah Oke.
 
 ## Logo and app icon
 
-The game has its own logo (an angry tomato climbing out of a pot with "KITCHEN INVASION" around it). I made it with `tools/make_logo.py`. It is set as the default app icon in Player Settings, shown on the splash screen above the "Made with Unity" logo, and used on the start screen, so it ships with every build.
+The game has its own logo (an angry tomato climbing out of a pot with "KITCHEN INVASION" around it). I made it with `tools/make_logo.py`. It is set as the default app icon in Player Settings and used on the start screen, so it ships with every build. The splash screen is the default "Made with Unity" one.
 
 ## Opening the project
 

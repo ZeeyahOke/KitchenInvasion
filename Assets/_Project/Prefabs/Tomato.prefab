@@ -552,7 +552,8 @@ MonoBehaviour:
   maxHealth: 3
   moveSpeed: 0.3
   scoreValue: 10
-  hitFlashTime: 0.12
+  hitFlashTime: 0.18
+  flashMaterial: {fileID: 2100000, guid: f6992a680be6d469aaca2dd546fa20ed, type: 2}
   attackRange: 0.5
   attackCooldown: 1.5
   attackDamage: 5
