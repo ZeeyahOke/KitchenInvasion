@@ -5,7 +5,8 @@ namespace KitchenInvasion {
         [SerializeField] int maxHealth = 3;
         [SerializeField] float moveSpeed = 0.3f;
         [SerializeField] int scoreValue = 10;
-        [SerializeField] float hitFlashTime = 0.12f;
+        [SerializeField] float hitFlashTime = 0.18f;
+        [SerializeField] Material flashMaterial;
 
         protected PlayerHealth player;
         protected float speedMultiplier = 1f;
@@ -14,7 +15,7 @@ namespace KitchenInvasion {
         float hitTimer;
         Vector3 normalScale;
         Renderer[] renderers;
-        MaterialPropertyBlock flashBlock;
+        Material[] normalMaterials;
 
         public int ScoreValue => scoreValue;
 
@@ -25,7 +26,8 @@ namespace KitchenInvasion {
             health = maxHealth;
             normalScale = transform.localScale;
             renderers = GetComponentsInChildren<Renderer>();
-            flashBlock = new MaterialPropertyBlock();
+            normalMaterials = new Material[renderers.Length];
+            for (int i = 0; i < renderers.Length; i++) normalMaterials[i] = renderers[i].sharedMaterial;
         }
 
         void Update() {
@@ -61,6 +63,7 @@ namespace KitchenInvasion {
             health -= amount;
             hitTimer = hitFlashTime;
             SetFlash(true);
+            GameEvents.EnemyHit();
             if (health <= 0) {
                 GameEvents.EnemyKilled(this);
                 Destroy(gameObject);
@@ -71,7 +74,7 @@ namespace KitchenInvasion {
             if (hitTimer <= 0f) return;
             hitTimer -= Time.deltaTime;
             float punch = Mathf.Clamp01(hitTimer / hitFlashTime);
-            transform.localScale = normalScale * (1f + 0.3f * punch);
+            transform.localScale = normalScale * (1f + 0.35f * punch);
             if (hitTimer <= 0f) {
                 transform.localScale = normalScale;
                 SetFlash(false);
@@ -79,8 +82,8 @@ namespace KitchenInvasion {
         }
 
         void SetFlash(bool on) {
-            flashBlock.SetColor("_EmissionColor", on ? Color.white : Color.black);
-            foreach (Renderer part in renderers) part.SetPropertyBlock(flashBlock);
+            for (int i = 0; i < renderers.Length; i++)
+                renderers[i].sharedMaterial = on ? flashMaterial : normalMaterials[i];
         }
     }
 }

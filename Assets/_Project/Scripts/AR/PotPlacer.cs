@@ -27,7 +27,8 @@ namespace KitchenInvasion {
         }
 
         public void ResetPot() {
-            if (Pot != null) Destroy(Pot.gameObject);
+            if (Pot == null) return;
+            Destroy(Pot.gameObject);
             HasPot = false;
             planeManager.enabled = true;
             session.Reset();

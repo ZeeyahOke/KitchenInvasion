@@ -9,6 +9,7 @@ namespace KitchenInvasion {
         public static event Action<int, int> OnHealthChanged;
         public static event Action<float> OnTimeChanged;
         public static event Action OnEnemySpawned;
+        public static event Action OnEnemyHit;
         public static event Action<Enemy> OnEnemyKilled;
         public static event Action OnPlayerShot;
         public static event Action OnEnemyShot;
@@ -25,6 +26,7 @@ namespace KitchenInvasion {
         public static void HealthChanged(int health, int maxHealth) { OnHealthChanged?.Invoke(health, maxHealth); }
         public static void TimeChanged(float timeLeft) { OnTimeChanged?.Invoke(timeLeft); }
         public static void EnemySpawned() { OnEnemySpawned?.Invoke(); }
+        public static void EnemyHit() { OnEnemyHit?.Invoke(); }
         public static void EnemyKilled(Enemy enemy) { OnEnemyKilled?.Invoke(enemy); }
         public static void PlayerShot() { OnPlayerShot?.Invoke(); }
         public static void EnemyShot() { OnEnemyShot?.Invoke(); }
