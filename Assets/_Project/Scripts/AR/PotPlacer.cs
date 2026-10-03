@@ -5,10 +5,12 @@ using UnityEngine.XR.ARSubsystems;
 
 namespace KitchenInvasion {
     public class PotPlacer : MonoBehaviour {
+        [SerializeField] ARSession session;
         [SerializeField] ARRaycastManager raycastManager;
         [SerializeField] ARPlaneManager planeManager;
         [SerializeField] GameObject potPrefab;
-        [SerializeField] Transform playerCamera;
+        [SerializeField] Camera playerCamera;
+        [SerializeField] float lookDownAmount = 0.3f;
 
         readonly List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
@@ -17,14 +19,31 @@ namespace KitchenInvasion {
         public int PlacedFrame { get; private set; }
 
         void Update() {
-            if (HasPot || !GameManager.Instance.IsPlaying) return;
-            if (!PointerInput.WasTapped() || PointerInput.IsOverUI()) return;
+            if (HasPot) return;
+            UpdatePlaneVisibility();
+            if (!GameManager.Instance.IsPlaying || !PointerInput.WasTapped() || PointerInput.IsOverUI()) return;
             if (raycastManager.Raycast(PointerInput.Position(), hits, TrackableType.PlaneWithinPolygon))
                 PlacePot(hits[0].pose.position);
         }
 
+        public void ResetPot() {
+            if (Pot != null) Destroy(Pot.gameObject);
+            HasPot = false;
+            planeManager.enabled = true;
+            session.Reset();
+        }
+
+        void UpdatePlaneVisibility() {
+            bool lookingDown = playerCamera.transform.forward.y < -lookDownAmount;
+            foreach (ARPlane plane in planeManager.trackables) {
+                Vector3 view = playerCamera.WorldToViewportPoint(plane.center);
+                bool onScreen = view.z > 0f && view.x > -0.2f && view.x < 1.2f && view.y > -0.2f && view.y < 1.2f;
+                plane.GetComponent<MeshRenderer>().enabled = lookingDown && onScreen;
+            }
+        }
+
         void PlacePot(Vector3 position) {
-            Vector3 lookDirection = playerCamera.position - position;
+            Vector3 lookDirection = playerCamera.transform.position - position;
             lookDirection.y = 0f;
             Quaternion rotation = lookDirection.sqrMagnitude > 0.001f ? Quaternion.LookRotation(lookDirection) : Quaternion.identity;
 

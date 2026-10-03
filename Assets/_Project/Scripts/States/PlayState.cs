@@ -4,6 +4,7 @@ namespace KitchenInvasion {
     public class PlayState : IGameState {
         public void Enter(GameManager game) {
             game.IsPlaying = true;
+            game.PotPlacer.ResetPot();
             game.ResetStats();
             game.Player.ResetHealth(game.Difficulty.playerMaxHealth);
             game.Spawner.StartSpawning(game.Difficulty);
