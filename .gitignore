@@ -112,3 +112,11 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# My notes and helper scripts (kept locally, not in the repo)
+/docs/
+/tools/
+
+# macOS and editor files
+.DS_Store
+.vscode/
