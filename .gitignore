@@ -41,3 +41,6 @@ ExportedObj/
 *.opendb
 *.VC.db
 .DS_Store
+
+/docs/
+/tools/
