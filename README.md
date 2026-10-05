@@ -2,7 +2,6 @@
 
 Kitchen Invasion is a small mobile AR survival shooter I made for iPhone with Unity 6, AR Foundation and ARKit. You point your phone at the floor, place a cooking pot, and angry food climbs out of it and comes for you. You are the camera, so you aim by moving the phone and shoot by tapping. Survive 90 seconds to win.
 
-Made by Fawziyyah Oke.
 
 ## How to play
 
@@ -19,10 +18,6 @@ Made by Fawziyyah Oke.
 | Spawn interval | 2.5 s | 1.5 s |
 | Enemy speed | x1.0 | x1.3 |
 | Player health | 150 | 100 |
-
-## Logo and app icon
-
-The game has its own logo (an angry tomato climbing out of a pot with "KITCHEN INVASION" around it). I made it with `tools/make_logo.py`. It is set as the default app icon in Player Settings and used on the start screen, so it ships with every build. The splash screen is the default "Made with Unity" one.
 
 ## Opening the project
 
@@ -65,8 +60,6 @@ Assets/
   Settings/             URP pipeline assets (from the Universal 3D template)
   TextMesh Pro/         TMP essential resources
   XR/                   XR Plug-in Management and ARKit settings
-docs/                   technical document, diagrams, video script and notes
-tools/                  Python scripts I used to make the texture and convert the models
 ```
 
 ## Architecture in short
@@ -79,4 +72,5 @@ tools/                  Python scripts I used to make the texture and convert th
 - `DifficultySettings` is a ScriptableObject with an Easy and a Hard asset.
 - `Leaderboard` saves the last 5 games as JSON in PlayerPrefs.
 
-More detail, the class diagram and pseudocode are in the [Technical Document](docs/TechnicalDocument.pdf). Asset credits are in [docs/ASSETS.md](docs/ASSETS.md).
+More detail, the class diagram and pseudocode are in the Technical documentation. 
+Models and sound effects: Kenney.nl. Music: Juhani Junkala. Font: Lilita One (Google Fonts)
